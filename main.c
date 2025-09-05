@@ -7,13 +7,9 @@
 
 #include "convert.c"
 
-extern void sub_convert(uint32_t, int, char*);
-extern void div_convert(uint32_t, int, char*);
-extern void print_tables(uint32_t);
-
 int main() {
    // based on Appendix A.1
-   FILE *file = fopen("a1_test_file.txt", "r");
+   FILE *file = fopen("a1_test_file.txt", "r"); // open test file
    if (file == NULL) {
       printf("Error: Could not open file\n");
       return 1;
@@ -22,7 +18,7 @@ int main() {
    char line[256];
    int test_number = 0;
    int tests_passed = 0;
-   while (fgets(line, sizeof(line), file) != NULL) {
+   while (fgets(line, sizeof(line), file) != NULL) { // read lines
       if (line[0] == '#') continue; // ignore comments
       if (line[0] == '\n') continue; // ignore empty lines
       line[strcspn(line, "\n")] = '\0'; // strip the newline character
@@ -42,9 +38,9 @@ int main() {
       char test_result[5];
       switch (func[0]) {
          case 's': // sub_convert
-            uint32_t sub_n = (uint32_t)strtoul(arg1, 0L, 10); // magic
+            uint32_t sub_n = (uint32_t)strtoul(arg1, 0L, 10); // magic (converts string to uint32_t)
             uint32_t sub_base = (uint32_t)strtoul(arg2, 0L, 10);
-            char * myout = malloc(32+1);
+            char * myout = malloc(32+1); // prevents segmentation fault
             sub_convert(sub_n, sub_base, myout);
             if (strcmp(myout, arg3) == 0) { strcpy(test_result, pass); tests_passed++; }
             else strcpy(test_result, fail);
@@ -122,11 +118,6 @@ int main() {
    fclose(file);
    remove("temp.txt"); // clean up temporary file
    printf("Summary: %d/%d tests passed", tests_passed, test_number);
-
-
-   char* help = malloc(32+1); // needs malloc to prevent segmentation fault (would have been nice to know earlier)
-   
-
 
    return 0;
 }
